@@ -25,6 +25,39 @@
 
 <body>
 
+    <!-- Fullscreen Clock Overlay -->
+    <div id="fullscreenClockOverlay" class="fullscreen-clock-overlay hidden">
+        <div class="fs-clock-content">
+            <div class="fs-clock-branding">
+                <h2 class="fs-clock-title">WAVE <span>3.0</span></h2>
+                <p class="fs-clock-subtitle">24 Hours National Level Hackathon</p>
+            </div>
+            <div class="fs-clock-timer-wrap">
+                <div class="fs-clock-timer" id="fs-clock-timer">
+                    <div class="fs-time-block">
+                        <span class="fs-time-value" id="fs-hours">00</span>
+                        <span class="fs-time-label">HOURS</span>
+                    </div>
+                    <span class="fs-time-separator">:</span>
+                    <div class="fs-time-block">
+                        <span class="fs-time-value" id="fs-minutes">00</span>
+                        <span class="fs-time-label">MINUTES</span>
+                    </div>
+                    <span class="fs-time-separator">:</span>
+                    <div class="fs-time-block">
+                        <span class="fs-time-value" id="fs-seconds">00</span>
+                        <span class="fs-time-label">SECONDS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fs-clock-badge">
+                <span class="pulse"></span>
+                <span>LIVE COUNTDOWN</span>
+            </div>
+        </div>
+        <div class="fs-particles" id="fsParticles"></div>
+    </div>
+
     <!-- Ambient Background Effects -->
     <div class="ambient-bg ambient-1"></div>
     <div class="ambient-bg ambient-2"></div>
@@ -450,6 +483,12 @@
                 <p id="announcementText"></p>
             </div>
         </div>
+    </div>
+
+    <!-- Auto-Scroll Indicator -->
+    <div id="autoScrollIndicator" class="auto-scroll-indicator hidden">
+        <i class="fa-solid fa-arrows-up-down"></i>
+        <span>Auto-Scrolling</span>
     </div>
 
     <!-- Firebase SDK -->

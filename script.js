@@ -339,6 +339,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof window.updateAnnouncement === 'function') {
             window.updateAnnouncement();
         }
+
+        // Fullscreen Clock Mode
+        const fsOverlay = document.getElementById('fullscreenClockOverlay');
+        if (fsOverlay) {
+            const fsEnabled = fbCache.fullscreenClock === 'true';
+            if (fsEnabled) {
+                fsOverlay.classList.remove('hidden');
+                updateFullscreenClock();
+                if (!window._fsParticlesCreated) {
+                    createFsParticles();
+                    window._fsParticlesCreated = true;
+                }
+            } else {
+                fsOverlay.classList.add('hidden');
+            }
+        }
+
+        // Auto-Scroll Toggle
+        const autoScrollIndicator = document.getElementById('autoScrollIndicator');
+        const autoScrollEnabled = fbCache.autoScrollEnabled === 'true';
+        if (autoScrollIndicator) {
+            if (autoScrollEnabled) {
+                autoScrollIndicator.classList.remove('hidden');
+                startAutoScroll();
+            } else {
+                autoScrollIndicator.classList.add('hidden');
+                stopAutoScroll();
+            }
+        }
     }
 
     // --- Firebase Real-Time Listener (replaces localStorage 'storage' event) ---
@@ -347,6 +376,117 @@ document.addEventListener('DOMContentLoaded', () => {
         fbCache = snapshot.val() || {};
         updateFromStorage();
     });
+
+    // --- Fullscreen Clock Helpers ---
+    function updateFullscreenClock() {
+        const liveTimer = fbCache.liveTimer;
+        const timerStartTs = fbCache.timerStartTs;
+        const timerRunning = fbCache.timerRunning === 'true';
+        const pausedRemaining = fbCache.timerPausedRemaining;
+
+        const fsHours = document.getElementById('fs-hours');
+        const fsMinutes = document.getElementById('fs-minutes');
+        const fsSeconds = document.getElementById('fs-seconds');
+
+        if (!liveTimer || !fsHours || !fsMinutes || !fsSeconds) return;
+
+        const parts = liveTimer.split(':');
+        const initialH = parseInt(parts[0] || '0', 10);
+        const initialM = parseInt(parts[1] || '0', 10);
+        const initialS = parseInt(parts[2] || '0', 10);
+        const initialTotalSeconds = (initialH * 3600) + (initialM * 60) + initialS;
+
+        let currentTotalSeconds = initialTotalSeconds;
+
+        if (timerRunning && timerStartTs) {
+            const startTs = parseInt(timerStartTs, 10);
+            const now = Date.now();
+            const elapsedSeconds = Math.floor((now - startTs) / 1000);
+            currentTotalSeconds = initialTotalSeconds - elapsedSeconds;
+        } else if (pausedRemaining) {
+            currentTotalSeconds = parseInt(pausedRemaining, 10);
+        }
+
+        if (currentTotalSeconds < 0) currentTotalSeconds = 0;
+
+        fsHours.textContent = Math.floor(currentTotalSeconds / 3600).toString().padStart(2, '0');
+        fsMinutes.textContent = Math.floor((currentTotalSeconds % 3600) / 60).toString().padStart(2, '0');
+        fsSeconds.textContent = (currentTotalSeconds % 60).toString().padStart(2, '0');
+    }
+
+    function createFsParticles() {
+        const container = document.getElementById('fsParticles');
+        if (!container) return;
+        const colors = ['rgba(14, 165, 233, 0.4)', 'rgba(139, 92, 246, 0.3)', 'rgba(16, 185, 129, 0.3)', 'rgba(56, 189, 248, 0.3)'];
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'fs-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            p.style.width = (2 + Math.random() * 3) + 'px';
+            p.style.height = p.style.width;
+            p.style.animationDuration = (8 + Math.random() * 12) + 's';
+            p.style.animationDelay = (Math.random() * 10) + 's';
+            container.appendChild(p);
+        }
+    }
+
+    // --- Auto-Scroll Logic ---
+    let autoScrollInterval = null;
+    let autoScrollDirection = 1; // 1 = down, -1 = up
+    let autoScrollPaused = false;
+    let autoScrollResumeTimeout = null;
+
+    function startAutoScroll() {
+        if (autoScrollInterval) return; // already running
+        const scrollArea = document.querySelector('.scroll-area');
+        if (!scrollArea) return;
+
+        autoScrollDirection = 1;
+
+        // Pause on user interaction
+        const pauseScrollTemporarily = () => {
+            autoScrollPaused = true;
+            clearTimeout(autoScrollResumeTimeout);
+            autoScrollResumeTimeout = setTimeout(() => {
+                autoScrollPaused = false;
+            }, 5000);
+        };
+
+        scrollArea.addEventListener('wheel', pauseScrollTemporarily);
+        scrollArea.addEventListener('touchstart', pauseScrollTemporarily);
+        scrollArea.addEventListener('mousedown', pauseScrollTemporarily);
+
+        autoScrollInterval = setInterval(() => {
+            if (autoScrollPaused) return;
+
+            const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+            if (maxScroll <= 0) return;
+
+            scrollArea.scrollTop += autoScrollDirection * 1;
+
+            // Reached the bottom
+            if (scrollArea.scrollTop >= maxScroll) {
+                autoScrollPaused = true;
+                setTimeout(() => {
+                    // Smooth scroll back to the top
+                    scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                        autoScrollPaused = false;
+                    }, 2000);
+                }, 3000);
+            }
+        }, 30);
+    }
+
+    function stopAutoScroll() {
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+        }
+        clearTimeout(autoScrollResumeTimeout);
+        autoScrollPaused = false;
+    }
 
     // --- 5. Theme Toggle Logic ---
     const themeToggleBtn = document.getElementById('theme-toggle');
@@ -395,6 +535,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         if (fbCache.timerRunning === 'true') {
             tickTimer();
+            // Also update fullscreen clock if visible
+            const fsOverlay = document.getElementById('fullscreenClockOverlay');
+            if (fsOverlay && !fsOverlay.classList.contains('hidden')) {
+                updateFullscreenClock();
+            }
         }
     }, 1000);
 

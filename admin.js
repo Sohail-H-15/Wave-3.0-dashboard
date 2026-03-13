@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { rank: 4, avatar: 'S', name: 'Syntax Error', college: 'RVCE', tClass: 'primary', theme: 'EdTech', progress: 75, score: 80.1 }
         ], null, 4),
         showAnnouncement: 'false',
-        announcementMessage: ''
+        announcementMessage: '',
+        fullscreenClock: 'false',
+        autoScrollEnabled: 'false'
     };
 
     // Sync form inputs from Firebase cache
