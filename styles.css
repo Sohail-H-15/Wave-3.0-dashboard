@@ -1746,70 +1746,170 @@ select {
 }
 
 @media (max-width: 768px) {
+    body {
+        overflow: auto;
+        height: auto;
+    }
+
     .app-container {
         flex-direction: column;
         padding: 0;
-        height: 100vh;
-        height: 100dvh;
-        overflow: hidden;
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: visible;
     }
 
+    /* --- Sidebar becomes a slim top bar --- */
     .sidebar {
         width: 100%;
         height: auto;
         border-right: none;
         border-bottom: 1px solid var(--glass-border);
-        flex-direction: row;
-        padding: 16px;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        padding: 12px 16px;
+        align-items: stretch;
+        gap: 10px;
         z-index: 100;
+        flex-shrink: 0;
+        border-radius: 0;
     }
 
-    .nav-menu,
-    .event-info-compact,
-    .sidebar-footer {
+    /* Top row: Logo + Date badge side-by-side */
+    .sidebar > .logo {
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .logo h2 {
+        font-size: 1.6rem !important;
+    }
+
+    /* Hide nav links on mobile — content is all scrollable */
+    .nav-menu {
         display: none;
     }
 
-    .logo {
+    /* Show event info inline */
+    .event-info-compact {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
         margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
     }
 
+    /* --- Timer widget: compact horizontal layout --- */
+    .sidebar-footer {
+        margin-top: 0;
+    }
+
+    .sidebar-footer .countdown-widget {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 14px !important;
+        gap: 10px !important;
+        border-radius: 10px !important;
+        margin-top: 0 !important;
+    }
+
+    .sidebar-footer .countdown-widget .timer-label {
+        border-left: none;
+        padding-left: 0;
+        margin-bottom: 0 !important;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    .sidebar-footer .countdown-widget .time-blocks {
+        font-size: 1.2rem !important;
+        gap: 4px !important;
+    }
+
+    /* --- Main content fills remaining space --- */
     .main-content {
-        padding: 16px;
+        padding: 12px;
+        height: auto;
+        overflow: visible;
+        min-height: 0;
     }
 
+    .scroll-area {
+        overflow: visible;
+        padding-right: 0;
+    }
+
+    /* --- Top bar compact --- */
     .top-bar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 10px;
+        padding: 0 4px 12px 4px;
+    }
+
+    .page-title {
+        gap: 10px !important;
+    }
+
+    .page-title img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .page-title h2 {
+        font-size: 0.95rem !important;
+    }
+
+    .page-title h1 {
+        font-size: 0.7rem !important;
     }
 
     .header-actions {
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
-    .page-title img {
-        width: 45px !important;
-        height: 45px !important;
+    .status-indicator {
+        padding: 5px 10px;
+        font-size: 0.75rem;
     }
 
-    .page-title h2 {
-        font-size: 1.1rem !important;
+    /* --- KPI cards stack --- */
+    .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-    .page-title h1 {
-        font-size: 0.75rem !important;
+    .kpi-card {
+        padding: 16px;
+        gap: 12px;
     }
 
+    .kpi-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .kpi-value {
+        font-size: 1.6rem;
+    }
+
+    /* --- Dashboard grid stacks --- */
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
 
-    .kpi-grid {
-        grid-template-columns: 1fr;
+    /* --- Timeline compact --- */
+    .timeline-section {
+        padding: 12px;
     }
 
     .timeline-track {
@@ -1818,15 +1918,142 @@ select {
 
     .timeline-nodes {
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 12px;
         justify-content: center;
     }
 
+    .node {
+        width: 75px;
+    }
+
+    .node h4 {
+        font-size: 0.7rem;
+    }
+
+    .node p {
+        font-size: 0.6rem;
+    }
+
+    /* --- Metrics grid stacks --- */
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* --- Evaluation section --- */
     .eval-content {
         flex-direction: column;
     }
 
+    .eval-chart-area {
+        min-height: 200px;
+    }
+
     .eval-stats {
         width: 100%;
+    }
+
+    /* --- Content row stacks --- */
+    .content-row {
+        flex-direction: column;
+    }
+
+    /* --- Podium compact --- */
+    .podium-area {
+        gap: 8px;
+        padding-top: 16px;
+    }
+
+    .trophy-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .team-name {
+        font-size: 0.95rem;
+    }
+
+    .winner {
+        transform: scale(1.05);
+        margin-bottom: 10px;
+    }
+
+    /* --- Table compact --- */
+    .table-panel {
+        padding: 12px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .leaderboard-table td {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+
+    .leaderboard-table th {
+        padding: 8px;
+        font-size: 0.7rem;
+    }
+
+    .progress-cell {
+        width: 100px;
+    }
+
+    /* --- Announcement modal --- */
+    .announcement-modal .modal-content {
+        padding: 16px 20px;
+    }
+
+    .announcement-modal .modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .announcement-modal .modal-body {
+        font-size: 0.95rem;
+    }
+
+    /* Chart panel adjustments */
+    .chart-panel.tall {
+        min-height: 300px;
+    }
+
+    .live-monitoring {
+        grid-column: auto;
+    }
+}
+
+/* Extra small screens (phones in portrait) */
+@media (max-width: 400px) {
+    .logo h2 {
+        font-size: 1.3rem !important;
+    }
+
+    .page-title h2 {
+        font-size: 0.85rem !important;
+    }
+
+    .sidebar-footer .countdown-widget .time-blocks {
+        font-size: 1rem !important;
+    }
+
+    .kpi-value {
+        font-size: 1.4rem;
+    }
+
+    .podium-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .winner {
+        transform: none;
+        order: -1;
     }
 }
