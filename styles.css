@@ -2267,6 +2267,42 @@ select {
     text-transform: uppercase;
 }
 
+/* Admin button on fullscreen clock */
+.fs-admin-btn {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(148, 163, 184, 0.5);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.fs-admin-btn:hover {
+    background: rgba(14, 165, 233, 0.15);
+    border-color: rgba(14, 165, 233, 0.3);
+    color: #38bdf8;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+    transform: translateY(-2px);
+}
+
+.fs-admin-btn i {
+    font-size: 0.9rem;
+}
+
 /* Floating particles */
 .fs-particles {
     position: absolute;
