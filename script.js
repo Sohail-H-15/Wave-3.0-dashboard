@@ -115,30 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 4. Total Hackathon Progress (24h tracker) ---
-    function updateTotalProgress() {
-        // Event runs from Mar 13, 12:00 PM to Mar 14, 12:00 PM
-        const start = new Date('2026-03-13T12:00:00').getTime();
-        const end = new Date('2026-03-14T12:00:00').getTime();
-        const now = new Date().getTime();
 
-        const badge = document.querySelector('.status-badge');
-
-        if (now < start) {
-            if (badge) badge.innerHTML = '<i class="fa-solid fa-hourglass-start"></i> Waiting to Start';
-        } else if (now > end) {
-            if (badge) badge.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Event Finished';
-        } else {
-            const distance = end - now;
-            const hoursLeft = Math.floor(distance / (1000 * 60 * 60));
-            const minsLeft = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-            if (badge) badge.innerHTML = `<i class="fa-regular fa-clock"></i> <b>${hoursLeft}h ${minsLeft}m</b> Total Time Remaining`;
-        }
-    }
-
-    updateTotalProgress();
-    setInterval(updateTotalProgress, 60000); // update once a minute
 
     // --- 8. Admin Panel Sync Logic (Firebase-powered) ---
     function updateFromStorage() {
