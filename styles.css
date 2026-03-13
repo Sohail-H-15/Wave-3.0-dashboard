@@ -1937,6 +1937,20 @@ select {
     /* --- Metrics grid stacks --- */
     .metrics-grid {
         grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .metric-box {
+        overflow: hidden;
+    }
+
+    .circ-progress {
+        transform: scale(1) !important;
+        margin: 10px !important;
+    }
+
+    .live-monitoring {
+        overflow: hidden;
     }
 
     /* --- Evaluation section --- */
