@@ -590,11 +590,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Top Header Buttons
-    const gearBtn = document.querySelector('.fa-user-shield')?.closest('button');
+    // Top Header Buttons - Admin Panel
+    const adminPanelBtn = document.getElementById('adminPanelBtn');
 
-    if (gearBtn) {
-        gearBtn.addEventListener('click', () => {
+    if (adminPanelBtn) {
+        adminPanelBtn.addEventListener('click', () => {
             window.open('admin.html', '_blank');
         });
     }
