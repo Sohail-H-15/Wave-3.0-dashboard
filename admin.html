@@ -339,6 +339,23 @@
         </form>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyD2qMtghJvPz-q-ocvJIHCxxHdGhE-P-HE",
+        authDomain: "wave-3-0.firebaseapp.com",
+        databaseURL: "https://wave-3-0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "wave-3-0",
+        storageBucket: "wave-3-0.firebasestorage.app",
+        messagingSenderId: "393079919567",
+        appId: "1:393079919567:web:6c77c2d3171559cbf3f8ba"
+      };
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.database();
+    </script>
+
     <!-- Scripts -->
     <script src="admin.js"></script>
     <script>

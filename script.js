@@ -1,5 +1,6 @@
 /**
  * WAVE 3.0 Hackathon Dashboard Scripts
+ * Uses Firebase Realtime Database for real-time cross-device sync
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,9 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     Chart.defaults.font.family = "'Outfit', sans-serif";
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
 
+    // --- Firebase Cache (replaces localStorage) ---
+    let fbCache = {};
+
     // --- 1. Phase-based Countdown Logic ---
     // Top right static 24h UI timer logic removed as the DOM element was deleted. 
-    // The active live timer logic for the sidebar runs in updateFromStorage() sync loop.
+    // The active live timer logic for the sidebar runs in tickTimer() sync loop.
 
     // --- 2. Chart Configurations ---
 
@@ -111,8 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Static leaderboard generation removed in favor of updateFromStorage dynamic rendering.
-
     // --- 4. Total Hackathon Progress (24h tracker) ---
     function updateTotalProgress() {
         // Event runs from Mar 13, 12:00 PM to Mar 14, 12:00 PM
@@ -138,66 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTotalProgress();
     setInterval(updateTotalProgress, 60000); // update once a minute
 
-    // --- 4.5 Live Telemetry Simulations ---
-    // Simulate code uploads increasing - DISABLED to prefer admin overrides
-    /*
-    setInterval(() => {
-        const uploadNum = document.querySelector('.metric-box:nth-child(3) .big-number');
-        if (uploadNum) {
-            let current = parseInt(uploadNum.textContent.replace(/,/g, ''));
-            if (!isNaN(current) && Math.random() > 0.5) {
-                current += Math.floor(Math.random() * 3);
-                uploadNum.textContent = current;
-            }
-        }
-    }, 3000);
-    */
-
-    // Breathing animation removed
-
-    // Simulate steady progress on the Checked-in and Judge Review bars - DISABLED
-    /*
-    setInterval(() => {
-        // Checked in
-        const checkInText = document.querySelector('.metric-box:nth-child(1) .circ-progress span');
-        const checkInCircle = document.querySelector('.metric-box:nth-child(1) .circ-progress');
-        if (checkInText && checkInCircle) {
-            let parts = checkInText.textContent.split('/');
-            ...
-    }, 5000);
-    */
-
-    // --- 8. Admin Panel Sync Logic ---
+    // --- 8. Admin Panel Sync Logic (Firebase-powered) ---
     function updateFromStorage() {
-        const kpiStudents = localStorage.getItem('dashboard:kpiStudents');
+
+        const kpiStudents = fbCache.kpiStudents;
         if (kpiStudents) {
             const el = document.getElementById('val-kpiStudents');
             if (el) el.innerHTML = `${kpiStudents}<span class="trend up"><i class="fa-solid fa-arrow-up"></i> 12%</span>`;
         }
 
-        const kpiTeams = localStorage.getItem('dashboard:kpiTeams');
+        const kpiTeams = fbCache.kpiTeams;
         if (kpiTeams) {
             const el = document.getElementById('val-kpiTeams');
             if (el) el.innerHTML = `${kpiTeams}<span class="trend up"><i class="fa-solid fa-arrow-up"></i> 5%</span>`;
         }
 
-        const kpiDuration = localStorage.getItem('dashboard:kpiDuration');
+        const kpiDuration = fbCache.kpiDuration;
         if (kpiDuration) {
             const el = document.getElementById('val-kpiDuration');
             if (el) el.innerHTML = `${kpiDuration}<span class="unit">HRS</span>`;
         }
 
-        const kpiPrize = localStorage.getItem('dashboard:kpiPrize');
+        const kpiPrize = fbCache.kpiPrize;
         if (kpiPrize) {
             const el = document.getElementById('val-kpiPrize');
             if (el) el.innerHTML = `₹${kpiPrize}<span class="unit">K</span>`;
         }
 
-        const telemetryCheckedIn = localStorage.getItem('dashboard:telemetryCheckedIn');
+        const telemetryCheckedIn = fbCache.telemetryCheckedIn;
         if (telemetryCheckedIn) {
             const el = document.getElementById('val-telemetryCheckedInSpan');
             if (el) {
-                const max = localStorage.getItem('dashboard:kpiTeams') || 155;
+                const max = fbCache.kpiTeams || 155;
                 el.textContent = `${telemetryCheckedIn}/${max}`;
 
                 const circle = el.closest('.circ-progress');
@@ -210,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-        const telemetryReviews = localStorage.getItem('dashboard:telemetryReviews');
+        const telemetryReviews = fbCache.telemetryReviews;
         if (telemetryReviews) {
-            const max = localStorage.getItem('dashboard:kpiTeams') || 155;
+            const max = fbCache.kpiTeams || 155;
 
             const pctEl = document.getElementById('val-telemetryReviewsPct');
             const fillEl = document.getElementById('val-telemetryReviewsFill');
@@ -230,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tickTimer();
 
         // Event Timeline Override
-        const eventStage = localStorage.getItem('dashboard:eventStage');
+        const eventStage = fbCache.eventStage;
         if (eventStage) {
             const stageNum = parseFloat(eventStage);
 
@@ -288,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // Final Protocol (Winners) Override
-        const resultsUnlocked = localStorage.getItem('dashboard:resultsUnlocked') === 'true';
+        const resultsUnlocked = fbCache.resultsUnlocked === 'true';
         const lock = document.getElementById('resultsLock');
         const podium = document.getElementById('resultsPodium');
 
@@ -305,19 +279,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const champ = document.querySelector('.podium-spot.winner .team-name');
-        if (champ) champ.textContent = localStorage.getItem('dashboard:winnerChampion') || 'TBA';
+        if (champ) champ.textContent = fbCache.winnerChampion || 'TBA';
 
         const runner = document.querySelector('.podium-spot.runner-up .team-name');
-        if (runner) runner.textContent = localStorage.getItem('dashboard:winnerRunnerUp') || 'TBA';
+        if (runner) runner.textContent = fbCache.winnerRunnerUp || 'TBA';
 
         const third = document.querySelector('.podium-spot.third-place .team-name');
-        if (third) third.textContent = localStorage.getItem('dashboard:winnerThird') || 'TBA';
+        if (third) third.textContent = fbCache.winnerThird || 'TBA';
 
         // Leaderboard Override
-        const lbJSON = localStorage.getItem('dashboard:leaderboardDataJSON');
-        if (lbJSON !== null) {
+        const lbJSON = fbCache.leaderboardDataJSON;
+        if (lbJSON != null) {
             try {
-                // If admin clears the textarea, lbJSON is just an empty string
                 const data = lbJSON.trim() === '' ? [] : JSON.parse(lbJSON);
                 const tbody = document.getElementById('leaderboardBody');
                 if (tbody) {
@@ -328,7 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         data.forEach(team => {
                             const tr = document.createElement('tr');
                             tr.className = `rank-${team.rank}`;
-                            // default fallback values
                             const rank = team.rank || '-';
                             const avatar = team.avatar || 'T';
                             const name = team.name || 'Unknown';
@@ -369,24 +341,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Run on load to pick up previously saved admin changes
-    updateFromStorage();
-
-    // Listen to real-time changes from admin panel tabs
-    window.addEventListener('storage', (e) => {
-        if (e.key && e.key.startsWith('dashboard:')) {
-            updateFromStorage();
-        }
+    // --- Firebase Real-Time Listener (replaces localStorage 'storage' event) ---
+    // This fires on initial load AND whenever any device writes to Firebase
+    db.ref('dashboard').on('value', (snapshot) => {
+        fbCache = snapshot.val() || {};
+        updateFromStorage();
     });
 
     // --- 5. Theme Toggle Logic ---
     const themeToggleBtn = document.getElementById('theme-toggle');
 
     function tickTimer() {
-        const liveTimer = localStorage.getItem('dashboard:liveTimer');
-        const timerStartTs = localStorage.getItem('dashboard:timerStartTs');
-        const timerRunning = localStorage.getItem('dashboard:timerRunning') === 'true';
-        const pausedRemaining = localStorage.getItem('dashboard:timerPausedRemaining');
+        const liveTimer = fbCache.liveTimer;
+        const timerStartTs = fbCache.timerStartTs;
+        const timerRunning = fbCache.timerRunning === 'true';
+        const pausedRemaining = fbCache.timerPausedRemaining;
 
         const sidebarTimerDisplay = document.getElementById('sidebar-countdown-display');
 
@@ -408,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentTotalSeconds = parseInt(pausedRemaining, 10);
             }
 
-            if (currentTotalSeconds < 0) currentTotalSeconds = 0; // Prevent going negative
+            if (currentTotalSeconds < 0) currentTotalSeconds = 0;
 
             const h = Math.floor(currentTotalSeconds / 3600).toString().padStart(2, '0');
             const m = Math.floor((currentTotalSeconds % 3600) / 60).toString().padStart(2, '0');
@@ -424,8 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Run interval locally to keep dashboard timer ticking autonomously
     setInterval(() => {
-        // Only tick the lightweight timer UI if it's running
-        if (localStorage.getItem('dashboard:timerRunning') === 'true') {
+        if (fbCache.timerRunning === 'true') {
             tickTimer();
         }
     }, 1000);
@@ -454,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let id in Chart.instances) {
             const chart = Chart.instances[id];
 
-            // Keep radar point texts dynamically aligned by refreshing config scales
             if (chart.config.type === 'radar') {
                 if (chart.options.scales.r.pointLabels) {
                     chart.options.scales.r.pointLabels.color = newTheme === 'light' ? '#475569' : '#cbd5e1';
@@ -553,7 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('#leaderboardBody tr');
 
             rows.forEach(row => {
-                // Skip the empty placeholder row currently used if there's no data
                 if (row.children.length === 1) return;
 
                 const text = row.textContent.toLowerCase();
@@ -571,13 +537,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const announcementText = document.getElementById('announcementText');
     const closeAnnouncementBtn = document.getElementById('closeAnnouncement');
 
-    // Make it globally accessible so the main storage listener can trigger it
+    // Make it globally accessible so the main Firebase listener can trigger it
     window.updateAnnouncement = function () {
         if (!announcementModal || !announcementText) return;
 
-        const showGlobal = localStorage.getItem('dashboard:showAnnouncement') === 'true';
-        const msg = localStorage.getItem('dashboard:announcementMessage') || '';
-        const timestamp = localStorage.getItem('dashboard:announcementTimestamp') || '0';
+        const showGlobal = fbCache.showAnnouncement === 'true';
+        const msg = fbCache.announcementMessage || '';
+        const timestamp = fbCache.announcementTimestamp || '0';
 
         // If the admin turned it off, hide it
         if (!showGlobal) {
@@ -588,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if the current broadcast was already dismissed by this client
         const dismissedTimestamp = sessionStorage.getItem('dismissedAnnouncementTs');
         if (timestamp !== '0' && timestamp === dismissedTimestamp) {
-            return; // Don't show again until a new broadcast triggers a new timestamp
+            return;
         }
 
         if (msg.trim() !== '') {
@@ -602,31 +568,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeAnnouncementBtn) {
         closeAnnouncementBtn.addEventListener('click', () => {
             announcementModal.classList.remove('show');
-            // Mark this specific broadcast timestamp as read for this session
-            const currentTs = localStorage.getItem('dashboard:announcementTimestamp') || '0';
+            const currentTs = fbCache.announcementTimestamp || '0';
             sessionStorage.setItem('dismissedAnnouncementTs', currentTs);
         });
     }
 
-    // Run on load
-    window.updateAnnouncement();
-
 });
 
 // --- 7. Global Action Methods ---
-// Expose unlock method globally for the button
 window.unlockResults = function () {
     const lock = document.getElementById('resultsLock');
     const podium = document.getElementById('resultsPodium');
     const placeholders = document.querySelectorAll('.placeholderblur');
 
-    // Hide lock overlay
     lock.classList.add('hidden');
-
-    // Show podium and animate reveal
     podium.classList.remove('hidden');
 
-    // Remove blur after brief delay for dramatic effect
     setTimeout(() => {
         placeholders.forEach(el => el.classList.add('unblurred'));
     }, 800);

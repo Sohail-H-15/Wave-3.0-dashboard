@@ -317,13 +317,23 @@
                                         style="font-size: 0.75rem; color: var(--accent-2-light); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
                                         13-03-2026</div>
                                     <div
-                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0;">
                                         <span style="color: var(--text-main); font-weight: 500;">1st Phase</span> <span
-                                            style="color: var(--text-muted);">2 PM - 5 PM</span>
+                                            style="color: var(--text-muted);">12 PM - 2 PM</span>
                                     </div>
                                     <div
                                         style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                                        <span style="color: var(--text-main); font-weight: 500; padding-left: 10px; font-size: 0.8rem; opacity: 0.8;">└ Evaluation</span> <span
+                                            style="color: var(--text-muted);">2 PM - 5 PM</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0;">
                                         <span style="color: var(--text-main); font-weight: 500;">2nd Phase</span> <span
+                                            style="color: var(--text-muted);">5 PM - 8 PM</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                                        <span style="color: var(--text-main); font-weight: 500; padding-left: 10px; font-size: 0.8rem; opacity: 0.8;">└ Evaluation</span> <span
                                             style="color: var(--text-muted);">8 PM - 11 PM</span>
                                     </div>
 
@@ -331,14 +341,19 @@
                                         style="font-size: 0.75rem; color: var(--accent-2-light); font-weight: 700; margin-top: 14px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
                                         14-03-2026</div>
                                     <div
-                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0;">
                                         <span style="color: var(--text-main); font-weight: 500;">3rd Phase</span> <span
-                                            style="color: var(--text-muted);">9 AM - 12 Noon</span>
+                                            style="color: var(--text-muted);">11 PM - 9 AM</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                                        <span style="color: var(--text-main); font-weight: 500; padding-left: 10px; font-size: 0.8rem; opacity: 0.8;">└ Evaluation</span> <span
+                                            style="color: var(--text-muted);">9 AM - 12 PM</span>
                                     </div>
                                     <div
                                         style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0;">
                                         <span style="color: var(--text-main); font-weight: 500;">Finalization</span>
-                                        <span style="color: var(--text-muted);">12 Noon - 1 PM</span>
+                                        <span style="color: var(--text-muted);">12 PM - 1 PM</span>
                                     </div>
                                 </div>
                             </div>
@@ -436,6 +451,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyD2qMtghJvPz-q-ocvJIHCxxHdGhE-P-HE",
+        authDomain: "wave-3-0.firebaseapp.com",
+        databaseURL: "https://wave-3-0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "wave-3-0",
+        storageBucket: "wave-3-0.firebasestorage.app",
+        messagingSenderId: "393079919567",
+        appId: "1:393079919567:web:6c77c2d3171559cbf3f8ba"
+      };
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.database();
+    </script>
 
     <!-- Scripts -->
     <script src="script.js"></script>
