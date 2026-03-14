@@ -273,37 +273,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tbody) {
                     tbody.innerHTML = '';
                     if (data.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Leaderboard will be updated after the Hackathon ends.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px;">Leaderboard will be updated after the Hackathon ends.</td></tr>`;
                     } else {
                         data.forEach(team => {
                             const tr = document.createElement('tr');
                             tr.className = `rank-${team.rank}`;
                             const rank = team.rank || '-';
-                            const avatar = team.avatar || 'T';
+                            const uid = team.UID || 'N/A';
                             const name = team.name || 'Unknown';
                             const college = team.college || '-';
                             const tClass = team.tClass || 'primary';
                             const theme = team.theme || '-';
-                            const progress = team.progress || 0;
-                            const score = typeof team.score === 'number' ? team.score.toFixed(1) : '-';
 
                             tr.innerHTML = `
                                 <td>#${rank}</td>
+                                <td style="font-family: monospace; color: var(--accent-1-light); font-weight: 500;">${uid}</td>
                                 <td>
                                     <div class="team-cell">
-                                        <div class="avatar-sm">${avatar}</div>
                                         ${name}
                                     </div>
                                 </td>
                                 <td>${college}</td>
                                 <td><span class="theme-tag ${tClass}">${theme}</span></td>
-                                <td>
-                                    <div class="progress-cell">
-                                        <div class="bar-labels" style="margin-bottom: 2px;"><span>Status</span><span>${progress}%</span></div>
-                                        <div class="mini-progress"><div class="mini-fill" style="width: ${progress}%; ${rank === 1 ? 'background: #facc15' : ''}"></div></div>
-                                    </div>
-                                </td>
-                                <td>${score}</td>
                             `;
                             tbody.appendChild(tr);
                         });

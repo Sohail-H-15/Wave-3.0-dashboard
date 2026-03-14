@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         winnerRunnerUp: 'Team TBA',
         winnerThird: 'Team TBA',
         leaderboardDataJSON: JSON.stringify([
-            { rank: 1, avatar: 'A', name: 'Team Apex', college: 'BEC Bagalkot', tClass: 'primary', theme: 'EdTech', progress: 95, score: 92.5 },
-            { rank: 2, avatar: 'N', name: 'Code Ninjas', college: 'VTU Belgaum', tClass: 'secondary', theme: 'Gen AI', progress: 88, score: 89.0 },
-            { rank: 3, avatar: 'B', name: 'Byte Me', college: 'BMSCE Bangalore', tClass: 'tertiary', theme: 'Healthcare', progress: 85, score: 86.5 },
-            { rank: 4, avatar: 'S', name: 'Syntax Error', college: 'RVCE', tClass: 'primary', theme: 'EdTech', progress: 75, score: 80.1 }
+            { rank: 1, UID: 'W3101', name: 'Team Apex', college: 'BEC Bagalkot', tClass: 'primary', theme: 'EdTech' },
+            { rank: 2, UID: 'W3102', name: 'Code Ninjas', college: 'VTU Belgaum', tClass: 'secondary', theme: 'Gen AI' },
+            { rank: 3, UID: 'W3103', name: 'Byte Me', college: 'BMSCE Bangalore', tClass: 'tertiary', theme: 'Healthcare' },
+            { rank: 4, UID: 'W3104', name: 'Syntax Error', college: 'RVCE', tClass: 'primary', theme: 'EdTech' }
         ], null, 4),
         showAnnouncement: 'false',
         announcementMessage: '',
