@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tbody) {
                     tbody.innerHTML = '';
                     if (data.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Leaderboard will be updated during the evaluation phase.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">Leaderboard will be updated after the Hackathon ends.</td></tr>`;
                     } else {
                         data.forEach(team => {
                             const tr = document.createElement('tr');
